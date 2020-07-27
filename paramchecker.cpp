@@ -16,5 +16,5 @@ bool isrespRateOk(float respRate)
 }
 
 bool vitalsAreOk(float bpm, float spo2, float respRate) {
-  return (isBpOk(bpm) || isSpo2Ok(spo2) || isrespRateOk(respRate));
+  return (isBpOk(bpm) && isSpo2Ok(spo2) && isrespRateOk(respRate));
 }
