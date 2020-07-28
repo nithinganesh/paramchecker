@@ -1,14 +1,19 @@
+#include <limits.h>
+
+bool isValid(float val, int min_val = INT_MIN, int max_val = INT_MAX){
+  return !(val < min_val || val > max_val);
+}
 
 bool isBpOk(float bpm){
-  return !(bpm < 70 || bpm > 150);
+  return isValid(bpm,70,150);
 }
 
 bool isSpo2Ok(float spo2){
-  return !(spo2 < 80);
+  return isValid(spo2,80);
 }
 
 bool isrespRateOk(float respRate){
-  return !(respRate < 30 || respRate > 60);
+  return isValid(respRate,30,60);
 }
 
 bool vitalsAreOk(float bpm, float spo2, float respRate) {
