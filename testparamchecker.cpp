@@ -2,17 +2,13 @@
 #include <gtest/gtest.h>
  
 TEST(VitalsTest, RANGE) {
-    ASSERT_EQ(true, isValidRange(100, 40, 150));
-    ASSERT_EQ(false, isValidRange(105.6, -1.0045, 100.01));
-    ASSERT_EQ(true, isValidRange(-1, -4, 0));
-}
+    vital bp{30,70,100};
+    vital spo2{60,50,100};
 
-TEST(VitalsTest, BPM) { 
-    ASSERT_EQ(true, vitalsAreOk(100, 100, 50));
-}
- 
-TEST(VitalsTest, SPO2) {
-    ASSERT_EQ(false, vitalsAreOk(100, 40, 50));
+    array<vital *,2> array_vitals{&bp,&spo2};
+    ASSERT_EQ(status::abnormal, vitalsAreOk(array_vitals));
+    bp.value_ = 80;
+    ASSERT_EQ(status::normal, vitalsAreOk(array_vitals));
 }
  
 int main(int argc, char **argv) {
