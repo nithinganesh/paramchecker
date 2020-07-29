@@ -5,7 +5,7 @@ TEST(VitalsTest, RANGE) {
     vital bp{30,70,100};
     vital spo2{60,50,100};
 
-    array<vital *,2> array_vitals{&bp,&spo2};
+    std::array<vital *,2> array_vitals{&bp,&spo2};
     ASSERT_EQ(status::abnormal, vitalsAreOk(array_vitals));
     bp.value_ = 80;
     ASSERT_EQ(status::normal, vitalsAreOk(array_vitals));
