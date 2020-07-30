@@ -1,48 +1,47 @@
-#include <array>
-enum status
-{
-  normal,
-  abnormal,
+#include <vector>
+#include <cmath>
+
+enum VITAL_ID {
+  bpm,
+  spo2,
+  respRate,
+  avgECG
 };
 
-template <typename T>
-class range
-{
-public:
-    range(T min_value, T max_value): min_value_(min_value),max_value_(max_value){}; 
-    
-    void setNewRange(T min_value, T max_value)
-    {
-        min_value_= min_value;
-        max_value_= max_value;
-    }
-    
-    status isValid(const T value)
-    {
-        return(value < min_value_ || value > max_value_) ?
-         status::abnormal : status::normal;
-    }
-private:
-    T min_value_;
-    T max_value_;
+struct Measurement{
+    VITAL_ID id;
+    float measured_value;
 };
 
-class vital : public range<float>
-{
-public:
-    vital( float curr_val, float min_val, float max_val): range(min_val,max_val),value_(curr_val){};
-    float value_;
+class IVitalCheck {
+  public:
+    virtual bool measurementIsOk(float measurement) = 0; //pure virtual
 };
 
-template <typename T, size_t N>
-status vitalsAreOk(std::array<T,N> &vitals)
-{
-    for (auto vital: vitals)
-    {
-        if (vital->isValid(vital->value_) == status::abnormal)
-            return status::abnormal;
+class VitalRangeCheck: public IVitalCheck {
+  public:
+    explicit VitalRangeCheck(float lower, float upper) {
+      m_lower = lower;
+      m_upper = upper;
     }
-    return status::normal;
-}
+    virtual bool measurementIsOk(float measurement) {
+      return (measurement >= m_lower && measurement <= m_upper);
+    }
+  private:
+    float m_lower;
+    float m_upper;
+};
 
+class VitalValueCheck: public IVitalCheck {
+  public:
+    explicit VitalValueCheck(float alarmValue) {
+      m_alarmValue = alarmValue;
+    }
+    virtual bool measurementIsOk(float measurement) {
+      return std::abs(measurement - m_alarmValue) < 0.001;
+    }
+  private:
+    float m_alarmValue;
+};
 
+std::vector<bool> vitalsAreOk(const std::vector<Measurement>& measurements);
